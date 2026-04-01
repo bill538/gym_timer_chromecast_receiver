@@ -27,14 +27,14 @@
             margin: 0 10vw; /* Generous side padding for overscan */
         }
         #details {
-            font-size: 4vw;
+            font-size: 4vw; 
             margin-top: 15px;
             text-transform: uppercase;
             font-weight: bold;
             opacity: 0.9;
         }
         #rounds {
-            font-size: 3vw;
+            font-size: 3vw; 
             margin-top: 10px;
             opacity: 0.8;
         }
@@ -67,14 +67,14 @@
 
         context.addCustomMessageListener(NAMESPACE, (event) => {
             const data = JSON.parse(event.data);
-
+            
             if (data.type === 'workout') {
                 // Stop live clock during workout
                 if (clockInterval) {
                     clearInterval(clockInterval);
                     clockInterval = null;
                 }
-
+                
                 document.body.style.backgroundColor = data.backgroundColor || '#40324B';
                 clockElement.innerText = data.time;
                 detailsElement.innerText = data.state;
@@ -84,7 +84,15 @@
                 document.body.style.backgroundColor = '#40324B';
                 detailsElement.innerText = 'Ready to Start';
                 roundsElement.innerText = '';
-                if (!clockInterval) {
+                
+                // If the app sends a specific time, display it; otherwise use local clock
+                if (data.time) {
+                    if (clockInterval) {
+                        clearInterval(clockInterval);
+                        clockInterval = null;
+                    }
+                    clockElement.innerText = data.time;
+                } else if (!clockInterval) {
                     updateLiveClock();
                     clockInterval = setInterval(updateLiveClock, 1000);
                 }
